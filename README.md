@@ -8,8 +8,8 @@ Known Issues:
 2) The game detects a gameover one turn late
 
 Version History:
-V0.2
+1) V0.2
 The game is still mostly text based, however a JavaFX GUI has been added which includes buttons for each move (instead of text input, as it was prior to the GUI being added).
 
-V0.1
+2) V0.1
 Currently the game runs in the console and is entirely text based.
