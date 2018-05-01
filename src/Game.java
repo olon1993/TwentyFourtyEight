@@ -1,7 +1,20 @@
 import java.util.Random;
 import java.util.Scanner;
 
-public class Game {
+import javafx.application.Application;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
+public class Game extends Application{
 
 	// GAME OPTIONS
 	private static final int ROWSXCOLS = 4;
@@ -11,18 +24,74 @@ public class Game {
 										 + "* GAME OVER *\n"
 										 + "*************";
 	
+	// Game Variables
 	private Node[][] board;
 	private Random random;
-	private Scanner keyboard;
 	private boolean isMoving;
 	
-	public Game() {
+	// Scene Variables
+	Text boardText;
+	Button upButton,
+		   downButton,
+		   leftButton,
+		   rightButton;
+	Font f = new Font("Courier New", 16);
+	
+	@Override
+	/* Prepares the game for play by calling the sceneInit and
+	 * gameInit methods.
+	 */
+	public void start(Stage arg0) throws Exception {
+		sceneInit(arg0);
 		gameInit();
-		gameLoop();
 	}
 	
+	/* Not required but provided as a fail safe
+	 */
 	public static void main(String[] args) {
-		new Game();
+		launch(args);
+	}
+	
+	/* This method simply initializes all of the required components
+	 * to make the GUI representation of the game.
+	 */
+	public void sceneInit(Stage stage) {
+		stage = new Stage();
+		stage.setTitle("2048");
+		
+		boardText = new Text("Board");
+		boardText.setFont(f);
+		
+		upButton = new Button("^");
+		upButton.setOnAction(e -> {moveUP();});
+		
+		downButton = new Button("v");
+		downButton.setOnAction(e -> {moveDOWN();});
+		
+		leftButton = new Button("<");
+		leftButton.setOnAction(e -> {moveLEFT();});
+		
+		rightButton = new Button(">");
+		rightButton.setOnAction(e -> {moveRIGHT();});
+		
+		upButton.setMinSize(30, 30);
+		downButton.setMinSize(30, 30);
+		leftButton.setMinSize(30, 30);
+		rightButton.setMinSize(30, 30);
+		
+		HBox horizontalHolder = new HBox();
+		VBox verticalHolder = new VBox();
+		
+		verticalHolder.getChildren().addAll(upButton, downButton);
+		horizontalHolder.getChildren().addAll(leftButton, verticalHolder, rightButton);
+		horizontalHolder.setAlignment(Pos.CENTER);
+		
+		VBox root = new VBox();
+		root.getChildren().addAll(boardText, horizontalHolder);
+		root.setAlignment(Pos.CENTER);
+		
+		stage.setScene(new Scene(root, 300, 200));
+		stage.show();
 	}
 	
 	/* Prepares the game to run before the player
@@ -30,7 +99,6 @@ public class Game {
 	 */
 	public void gameInit() {
 		board = new Node[ROWSXCOLS][ROWSXCOLS];
-		keyboard = new Scanner(System.in);
 		random = new Random();
 		
 		for(int i = 0; i < ROWSXCOLS; i++) {
@@ -41,27 +109,28 @@ public class Game {
 		
 		//Initialize first Node to the game board
 		initializeNewNode();
-		
+		initializeNewNode();
+		printBoard();
 	}
 	
-	/* This method checks for the Game Over state, calls the method for
-	 * initializing a new Node each turn, and prints the board.
+	/* This method replaces the gameLoop since the game has changed to 
+	 * a GUI representation. This method is called after each of the
+	 * move methods. If a new node can be initialized or a move
+	 * can be made the game continues. Otherwise the GAMEOVER message
+	 * is printed to the screen.
 	 */
-	public void gameLoop() {
-		while(true) {
-			if(initializeNewNode() || canMove()) {
-				printBoard();
-				playerTurn();
-			} else {
-				System.out.println(GAMEOVER);
-				break;
-			}
+	public void checkIfGameOver() {
+		if(initializeNewNode() || canMove()) {
+			printBoard();
+		} else {
+			boardText.setText(GAMEOVER);
 		}
 	}
 	
 	/* Prints the current state of the game board
 	 */
 	public void printBoard() {
+		String fullBoard = "";
 		for(int i = 0; i < ROWSXCOLS; i++) {
 			String line = "";
 			for(int j = 0; j < ROWSXCOLS; j++) {
@@ -72,34 +141,11 @@ public class Game {
 				}
 			}
 			
-			System.out.println(line);
+			fullBoard += line + "\n";
 			
 		}
-	}
-	
-	/* Determines the direction to move the Nodes and calls the proper move
-	 * method.
-	 */
-	public void playerTurn() {
-		String move = keyboard.nextLine();
-		switch(move.trim().toUpperCase()) {
-			case "U":
-			case "UP":
-				moveUP();
-				break;
-			case "D":
-			case "DOWN":
-				moveDOWN();
-				break;
-			case "L":
-			case "LEFT":
-				moveLEFT();
-				break;
-			case "R":
-			case "RIGHT":
-				moveRIGHT();
-				break;
-		}
+		
+		boardText.setText(fullBoard);
 		
 	}
 	
@@ -133,6 +179,7 @@ public class Game {
 		//If a move was made there may be more moves that can be made
 		//due to new Nodes becoming empty.
 		while (isMoving);
+		checkIfGameOver();
 	}
 	
 	/* Moves the Nodes to the bottom of the board and merges like Nodes
@@ -164,6 +211,7 @@ public class Game {
 		//If a move was made there may be more moves that can be made
 		//due to new Nodes becoming empty.
 		while (isMoving);
+		checkIfGameOver();
 	}
 	
 	/* Moves the Nodes to the left of the board and merges like Nodes
@@ -195,6 +243,7 @@ public class Game {
 		//If a move was made there may be more moves that can be made
 		//due to new Nodes becoming empty.
 		while (isMoving);
+		checkIfGameOver();
 	}
 	
 	/* Moves the Nodes to the right of the board and merges like Nodes
@@ -226,6 +275,7 @@ public class Game {
 		//If a move was made there may be more moves that can be made
 		//due to new Nodes becoming empty.
 		while (isMoving);
+		checkIfGameOver();
 	}
 	
 	/* Checks to see if there is at least one move where 
@@ -276,7 +326,7 @@ public class Game {
 			// select a random Node from the list of empty Nodes
 			selection = emptyNodes[random.nextInt(empty)];
 			
-		}else if(empty == 1) {
+		} else if(empty == 1) {
 			
 			// If there is space for a new Node but
 			// there is only one space left the
@@ -305,4 +355,5 @@ public class Game {
 		// Return true, new Node initialized successfully
 		return true;
 	}
+	
 }
