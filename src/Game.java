@@ -19,6 +19,8 @@ public class Game extends Application{
 	// GAME OPTIONS
 	private static final int ROWSXCOLS = 4;
 	private static final int SIZE = ROWSXCOLS * ROWSXCOLS;
+	private static final int WIDTH = 300;
+	private static final int HEIGHT = 200;
 	private static final boolean RANDOMGENERATOR = true;
 	private static final String GAMEOVER = "*************\n"
 										 + "* GAME OVER *\n"
@@ -30,11 +32,11 @@ public class Game extends Application{
 	private boolean isMoving;
 	
 	// Scene Variables
-	Text boardText;
-	Button upButton,
-		   downButton,
-		   leftButton,
-		   rightButton;
+	private Text boardText;
+	private Button upButton,
+		   		   downButton,
+		   		   leftButton,
+		   		   rightButton;
 	Font f = new Font("Courier New", 16);
 	
 	@Override
@@ -90,7 +92,27 @@ public class Game extends Application{
 		root.getChildren().addAll(boardText, horizontalHolder);
 		root.setAlignment(Pos.CENTER);
 		
-		stage.setScene(new Scene(root, 300, 200));
+		Scene scene = new Scene(root, WIDTH, HEIGHT);
+		scene.setOnKeyPressed(e -> {
+			switch(e.getCode()) {
+				case DOWN:
+					moveDOWN();
+					break;
+				case UP:
+					moveUP();
+					break;
+				case LEFT:
+					moveLEFT();
+					break;
+				case RIGHT:
+					moveRIGHT();
+					break;
+				default:
+					break;
+			}
+		});
+		
+		stage.setScene(scene);
 		stage.show();
 	}
 	
