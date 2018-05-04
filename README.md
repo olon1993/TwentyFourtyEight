@@ -8,6 +8,7 @@ Known Issues:
 2) The game detects a gameover one turn late
 
 Version History:
+
 A) V0.3
 The game now responds to the directional buttons being pressed.
 
