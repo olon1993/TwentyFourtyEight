@@ -9,11 +9,14 @@ Known Issues:
 
 Version History:
 
-A) V0.3
+A) V0.4
+The game gui now includes colored squares that represent the Tiles.
+
+B) V0.3
 The game now responds to the directional buttons being pressed.
 
-B) V0.2
+C) V0.2
 The game is still mostly text based, however a JavaFX GUI has been added which includes buttons for each move (instead of text input, as it was prior to the GUI being added).
 
-C) V0.1
+D) V0.1
 Currently the game runs in the console and is entirely text based.
